@@ -4,16 +4,18 @@ const http = require('http');
 const {Chess} = require("chess.js");
 const path = require("path");
 const { title } = require("process");
+const dotenv = require("dotenv")
+dotenv.config();
 
 
 const app = express();
+const port = process.env.PORT;
 
 const server = http.createServer(app)
 const io = socket(server)
 const chess = new Chess();
 let players={};
 let currentPlayer ="w";
-
 app.set("view engine","ejs");
 app.use(express.static(path.join(__dirname,"public")));
 
@@ -65,7 +67,15 @@ io.on("connection", function(uqsocket){
    })
 })
 
+// --------------deployment-----------------------
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../public/dist")));
 
-server.listen(3000,function(){
-    console.log("listening on port 3000")
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../public", "dist", "index.html"));
+//   });
+// }
+
+server.listen(port,function(){
+    console.log("listening on port: ", port)
 })
